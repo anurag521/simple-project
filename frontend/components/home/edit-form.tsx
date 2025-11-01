@@ -6,16 +6,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { UserFormValues } from "@/type"
+import { User, UserFormValues } from "@/type"
 import { UserForm } from "../add-user/add-user-from"
 import apiClient from "@/lib/axios.config"
 import { AxiosError } from "axios"
 import { toast } from "sonner"
 
-export default function EditForm({userId}: {userId: string}) {
+export default function EditForm({user}: {user: User}) {
        const onSubmit = async (data: UserFormValues) => {
        try {
-        const response = await apiClient.put(`/user/${userId}`, data)
+        const response = await apiClient.put(`/user/${user._id}`, data)
         if(response.status === 201){
             toast.success("User updated successfully")
         }
@@ -39,7 +39,7 @@ export default function EditForm({userId}: {userId: string}) {
           </DialogDescription>
         </DialogHeader>
         <div className="">
-            <UserForm onSubmit={onSubmit} />
+            <UserForm onSubmit={onSubmit} user={user} />
         </div>
       </DialogContent>
     </Dialog>

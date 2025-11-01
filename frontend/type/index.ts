@@ -14,10 +14,10 @@ export interface User {
   email: string;
   isActive: boolean;
   isAdmin: boolean;
-  phone?: string | null;
-  collegeName?: string | null;
-  collegeAddress?: Address | null;
-  address?: Address | null;
+  phone?: string ;
+  collegeName?: string ;
+  collegeAddress?: Address;
+  address?: Address;
   createdAt?: Date;
   updatedAt?: Date;
 }
