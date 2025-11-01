@@ -35,8 +35,8 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
+      title: "Add User",
+      url: "/dashboard/add-user",
       icon: IconListDetails,
     },
     {

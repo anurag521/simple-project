@@ -39,3 +39,30 @@ export interface DataTableProps {
   };
   isLoading?: boolean;
 }
+
+export interface UserFormProps {
+  user?: User;
+  onSubmit: (data: User) => void;
+  onCancel?: () => void;
+}
+
+export interface CheckboxProp {
+    label: string;
+    checked: boolean;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface InputProps {
+    label: string;
+    error?: string;
+    value: string;
+    type?: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+}
+
+export interface AddressFieldsProps {
+    prefix: string;
+    address: Address;
+    onChange: (prefix: string, field: string, value: string) => void;
+}
