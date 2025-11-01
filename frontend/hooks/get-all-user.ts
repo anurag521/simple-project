@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/lib/axios.config";
 import { ApiResponse, User } from "../type";
 
@@ -8,6 +9,7 @@ const fetchUsers = async (page: number, limit: number): Promise<ApiResponse> => 
 };
 
 export const useGetAllUsers = (initialPage: number, limit: number) => {
+  const queryClient = useQueryClient();
   const [cachedPages, setCachedPages] = useState<Record<number, User[]>>({});
   const [pagination, setPagination] = useState({
     totalPages: 0,
@@ -15,38 +17,41 @@ export const useGetAllUsers = (initialPage: number, limit: number) => {
     totalUsers: 0,
   });
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+
+  const { data, isLoading: loading, error } = useQuery({
+    queryKey: ["users", currentPage, limit],
+    queryFn: () => fetchUsers(currentPage, limit),
+    enabled: !cachedPages[currentPage],
+    staleTime: Infinity,
+  });
 
   useEffect(() => {
-    if (!cachedPages[currentPage]) {
-      setLoading(true);
-      fetchUsers(currentPage, limit)
-        .then((data) => {
-          setCachedPages((prev) => ({ ...prev, [currentPage]: data.users }));
-          setPagination({
-            totalPages: data.totalPages,
-            currentPage: data.currentPage,
-            totalUsers: data.totalUsers,
-          });
-          setLoading(false);
-          setError(null);
-          // Prefetch next page if any and not cached
-          if (currentPage < data.totalPages && !cachedPages[currentPage + 1]) {
-            fetchUsers(currentPage + 1, limit).then((nextData) => {
-              setCachedPages((prev) => ({ ...prev, [currentPage + 1]: nextData.users }));
-            });
+    if (data && !cachedPages[currentPage]) {
+      setCachedPages((prev) => ({ ...prev, [currentPage]: data.users }));
+      setPagination({
+        totalPages: data.totalPages,
+        currentPage: data.currentPage,
+        totalUsers: data.totalUsers,
+      });
+
+      // Prefetch next page if any and not cached
+      if (currentPage < data.totalPages && !cachedPages[currentPage + 1]) {
+        queryClient.prefetchQuery({
+          queryKey: ["users", currentPage + 1, limit],
+          queryFn: () => fetchUsers(currentPage + 1, limit),
+          staleTime: Infinity,
+        }).then(() => {
+          const nextData = queryClient.getQueryData<ApiResponse>(["users", currentPage + 1, limit]);
+          if (nextData) {
+            setCachedPages((prev) => ({ ...prev, [currentPage + 1]: nextData.users }));
           }
-        })
-        .catch((err) => {
-          setLoading(false);
-          setError(err);
         });
-    } else {
+      }
+    } else if (cachedPages[currentPage]) {
       // Update pagination currentPage if switching to cached page
       setPagination((prev) => ({ ...prev, currentPage }));
     }
-  }, [currentPage, limit, cachedPages]);
+  }, [data, currentPage, cachedPages, queryClient, limit]);
 
   return {
     data: {
@@ -56,6 +61,6 @@ export const useGetAllUsers = (initialPage: number, limit: number) => {
     currentPage,
     setCurrentPage,
     isLoading: loading,
-    error,
+    error: error as Error | null,
   };
 };
