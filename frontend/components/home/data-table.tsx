@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { MoreVertical, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useGetAllUsers } from '@/hooks/get-all-user';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import {
   Table,
   TableBody,
@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import Pagination from './pagination';
 
 export default function DataTable() {
