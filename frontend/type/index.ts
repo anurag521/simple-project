@@ -84,3 +84,9 @@ export interface FormFieldCheckboxProps {
   name: "isActive" | "isAdmin"
   label: string
 }
+
+export interface EditFormProps {
+    user: User;
+    isOpen: boolean;
+    onOpenChange: (open: boolean) => void;
+}
