@@ -3,24 +3,23 @@ import { User } from "@/type";
 import { TableCell, TableRow } from "../ui/table";
 import { Badge } from "../ui/badge";
 import { formatDate } from "@/hooks/date";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Edit, MoreVertical, Trash2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import EditForm from "./edit-form";
 import deleteUser from "@/hooks/delete-user";
 
 export default function DataTableRow({ user }: { user: User }) {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const deleteUserMutation = deleteUser();
-    const dropdownRef = useRef<HTMLButtonElement>(null);
-     const handleDelete = (userId: string) => {
+
+    const handleDelete = (userId: string) => {
         deleteUserMutation.mutate(userId, {
             onSuccess: () => {
                 // Close the dropdown after successful deletion
-                if (dropdownRef.current) {
-                    dropdownRef.current.click();
-                }
+                setIsDropdownOpen(false);
             }
         });
     };
@@ -55,10 +54,9 @@ export default function DataTableRow({ user }: { user: User }) {
                     {formatDate(user.createdAt)}
                 </TableCell>
                 <TableCell>
-                    <DropdownMenu>
+                    <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
                         <DropdownMenuTrigger asChild>
                             <Button
-                            ref={dropdownRef}
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8 p-0 hover:bg-muted"
@@ -68,16 +66,14 @@ export default function DataTableRow({ user }: { user: User }) {
                                 <span className="sr-only">Open menu</span>
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent 
-                            align="end" 
-                            className="w-40 bg-background border rounded-md shadow-lg z-50"
-                        >
+                        <DropdownMenuContent align="end" className="w-40">
                             <DropdownMenuItem
                                 onSelect={(e) => {
                                     e.preventDefault();
                                     setIsEditDialogOpen(true);
+                                    setIsDropdownOpen(false);
                                 }}
-                                className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted cursor-pointer"
+                                className="flex items-center gap-2 cursor-pointer"
                             >
                                 <Edit className="h-4 w-4" />
                                 Edit
@@ -87,7 +83,7 @@ export default function DataTableRow({ user }: { user: User }) {
                                     e.preventDefault();
                                     handleDelete(user._id!);
                                 }}
-                                className="flex items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-muted cursor-pointer"
+                                className="flex items-center gap-2 text-destructive focus:text-destructive cursor-pointer"
                                 disabled={deleteUserMutation.isPending}
                             >
                                 <Trash2 className="h-4 w-4" />
