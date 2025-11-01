@@ -1,8 +1,30 @@
-import { CheckboxProp } from "@/type";
+import { FormFieldCheckboxProps } from "@/type";
+import { Controller, useFormContext } from "react-hook-form";
+import { Checkbox } from "../ui/checkbox";
+import { FormItem, FormControl, FormLabel } from "../ui/form";
+import { UserFormValues } from "@/type";
 
-export const CheckboxForm = ({ label, checked, onChange }: CheckboxProp) => (
-  <label className="flex items-center space-x-2 cursor-pointer">
-    <input type="checkbox" checked={checked} onChange={onChange} className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500" />
-    <span className="text-sm font-medium text-gray-700">{label}</span>
-  </label>
-);
+export const FormFieldCheckbox = ({ 
+  name, 
+  label 
+}: FormFieldCheckboxProps) => {
+  const { control } = useFormContext<UserFormValues>()
+
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex items-center space-x-2 space-y-0">
+          <FormControl>
+            <Checkbox
+              checked={field.value as boolean}
+              onCheckedChange={field.onChange}
+            />
+          </FormControl>
+          <FormLabel className="!mt-0">{label}</FormLabel>
+        </FormItem>
+      )}
+    />
+  )
+}

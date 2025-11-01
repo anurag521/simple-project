@@ -36,7 +36,7 @@ const data = {
     },
     {
       title: "Add User",
-      url: "/dashboard/add-user",
+      url: "/add-user",
       icon: IconListDetails,
     },
     {

@@ -1,12 +1,34 @@
-import { InputProps } from "@/type";
+import { FormFieldInputProps, UserFormValues } from "@/type"
+import { Controller, useFormContext } from "react-hook-form"
+import { FormControl, FormItem, FormLabel, FormMessage } from "../ui/form"
+import { Input } from "../ui/input"
 
-export const InputForm = ({ label, error, ...props }: InputProps) => (
-  <div className="space-y-1">
-    <label className="text-sm font-medium text-gray-700">{label}</label>
-    <input
-      {...props}
-      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+export const FormFieldInput = ({ 
+  name, 
+  label, 
+  placeholder = "", 
+  type = "text" 
+}: FormFieldInputProps) => {
+  const { control } = useFormContext<UserFormValues>()
+  
+  return (
+    <Controller
+      control={control}
+      name={name as keyof UserFormValues}
+      render={({ field, fieldState: { error } }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Input 
+              placeholder={placeholder} 
+              type={type} 
+              {...field} 
+              value={(field.value as string) ?? ""}
+            />
+          </FormControl>
+          {error?.message && <FormMessage>{error.message}</FormMessage>}
+        </FormItem>
+      )}
     />
-    {error && <p className="text-xs text-red-600">{error}</p>}
-  </div>
-);
+  )
+}
