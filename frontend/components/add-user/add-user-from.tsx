@@ -42,15 +42,18 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
       }
     }
   })
-
-  const handleSubmit = async (values: UserFormValues) => {
-    try {
-      setIsSubmitting(true)
-      await onSubmit(values)
-    } finally {
-      setIsSubmitting(false)
+const handleSubmit = async (values: UserFormValues) => {
+  try {
+    setIsSubmitting(true);
+    await onSubmit(values);
+    // Reset form only if it's not an edit (no user prop)
+    if (!user) {
+      form.reset();
     }
+  } finally {
+    setIsSubmitting(false);
   }
+};
 
   return (
     <Card className="w-full max-w-4xl mx-auto ">
