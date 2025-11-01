@@ -6,6 +6,7 @@ import QueryReact from "@/providers/query-react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,6 +60,7 @@ export default function RootLayout({
                 </div>
               </SidebarInset>
             </SidebarProvider>
+             <Toaster />
           </QueryReact>
         </ThemeProvider>
       </body>

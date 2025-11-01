@@ -53,7 +53,7 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full max-w-4xl mx-auto ">
       <CardHeader>
         <CardTitle>{user ? 'Edit User' : 'Create New User'}</CardTitle>
       </CardHeader>
